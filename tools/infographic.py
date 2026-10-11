@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""블로그 본문용 간단 인포그래픽 생성기 (800x450 WebP, 보통 20~45KB).
+"""블로그 본문용 간단 인포그래픽 생성기 (800x640 WebP, 보통 20~45KB).
 사용: python3 infographic.py spec.json out.webp
 spec 예)
 {"template":"compare","title":"...","subtitle":"...","blog":"정보두리로","items":[{"head":"개인","rows":["1~10명","..."]}, ...]}
@@ -10,7 +10,7 @@ import json, sys
 from PIL import Image, ImageDraw, ImageFont
 
 S = 2                      # 2배로 그린 뒤 축소
-W, H = 800 * S, 450 * S
+W, H = 800 * S, 640 * S      # 5:4 (목록 썸네일 크롭 비율에 맞춤)
 FB = "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
 FM = "/usr/share/fonts/opentype/noto/NotoSansCJK-Medium.ttc"
 KR = 1                     # 'Noto Sans CJK KR' 인덱스는 환경마다 달라 이름으로 찾음
@@ -59,7 +59,7 @@ def draw_wrapped(draw, xy, text, f, fill, maxw, spacing=1.25):
         y += lh
     return y, len(lines)
 
-def fit_rows(draw, rows, maxw, maxh, sizes=(40, 36, 32, 30, 28)):
+def fit_rows(draw, rows, maxw, maxh, sizes=(46, 42, 38, 34, 30)):
     for sz in sizes:
         f = font(FM, sz)
         total = 0
@@ -93,8 +93,8 @@ def render(spec):
     header(d, spec, pal)
     items = spec["items"]
     n = len(items)
-    top = 250 if spec.get("subtitle") else 210
-    bottom = H - 140
+    top = 270 if spec.get("subtitle") else 230
+    bottom = H - 280
     left, right = 80, W - 80
     gap = 36
     cw = (right - left - gap * (n - 1)) // n
