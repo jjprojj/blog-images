@@ -137,25 +137,31 @@ def items_card(page, head, items, date, kind):
 
 def end_card(date):
     img, d = base(4, date)
-    y = 230
+    y = 172
     for ln in ["이 소식에는", "링크가 없어요"]:
-        d.text((PAD, y), ln, font=f(86, "Black"), fill=ON)
-        y += 112
-    y += 34
-    for ln in ["문자·메시지 속 링크는 누르지 않는 게 기본이에요.", "그래서 저희도 링크를 보내지 않아요."]:
-        d.text((PAD, y), ln, font=f(36), fill=ON_SUB)
-        y += 56
-    y += 50
-    # 검색창 그림 (주소 대신 이름)
-    d.rounded_rectangle([PAD, y, W - PAD, y + 110], radius=55, fill=CARD)
-    cx, cy = PAD + 62, y + 55
+        d.text((PAD, y), ln, font=f(78, "Black"), fill=ON)
+        y += 100
+    y += 22
+    for ln in ["문자·메시지 속 링크는 누르지 않는 게 기본이에요.", "그래서 저희도 직접 찾아오시게 안내해요."]:
+        d.text((PAD, y), ln, font=f(33), fill=ON_SUB)
+        y += 50
+    y += 40
+    # 1) 주소창에 직접 입력 (그림 속 글자라 눌리지 않음)
+    d.text((PAD, y), "주소창에 직접 입력", font=f(32, "Bold"), fill=ON)
+    y += 52
+    d.rounded_rectangle([PAD, y, W - PAD, y + 104], radius=20, fill=CARD)
+    d.text((PAD + 34, y + 52), "andanghae.kr", font=f(50, "Bold"), fill=INK, anchor="lm")
+    y += 136
+    # 2) 또는 검색
+    d.text((PAD, y), "또는 검색창에", font=f(32, "Bold"), fill=ON)
+    y += 52
+    d.rounded_rectangle([PAD, y, W - PAD, y + 104], radius=52, fill=CARD)
+    cx, cy = PAD + 58, y + 52
     d.ellipse([cx - 18, cy - 18, cx + 14, cy + 14], outline=BG, width=5)
     d.line([(cx + 10, cy + 10), (cx + 26, cy + 26)], fill=BG, width=6)
-    d.text((PAD + 110, cy), "순순히안당해", font=f(44, "Bold"), fill=INK, anchor="lm")
-    y += 150
-    d.text((PAD, y), "검색창에 직접 쳐서 들어오세요.", font=f(36, "Bold"), fill=ON)
-    y += 56
-    d.text((PAD, y), "자세한 내용도, 수상한 문자 점검도 거기 있어요.", font=f(32), fill=ON_SUB)
+    d.text((PAD + 104, cy), "순순히안당해", font=f(44, "Bold"), fill=INK, anchor="lm")
+    if y + 104 > H - 100:
+        print("[경고] 4번 카드가 넘칩니다")
     return img
 
 
