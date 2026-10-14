@@ -1,7 +1,7 @@
 """가족방 답장 카드 (정사각, 사이트 파란색).
 
 가족방에 기사가 올라왔을 때 "그래서 우리는 이렇게" 하고 답하는 카드.
-사용: python3 make_reply_card.py spec.json 출력폴더
+사용: python3 make_reply_card.py spec.json 출력폴더  (가로 링크용: 끝에 wide)
 spec: {"name": "...", "lead": "공유해 줘서 고마워요", "title": "...", "items": ["...", "...", "..."]}
 출력: <name>-reply-1080.jpg (본문·저장용), <name>-reply-800.png (카톡 공유 카드용)
 원칙: 하지 말 것은 '~하지 않기'로 끝까지 부정형. 누르는 링크 없음(주소는 그림 글자로만).
@@ -104,5 +104,52 @@ def make(s, out_dir):
     print(p2, os.path.getsize(p2) // 1024, "KB")
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" and len(sys.argv) == 3:
     make(json.load(open(sys.argv[1], encoding="utf-8")), sys.argv[2])
+
+
+def make_wide(s, out_dir):
+    """링크 공유(og:image)용 가로 카드 1200x600 (2:1). 카톡 링크 미리보기에서 잘리지 않게."""
+    W, H, P = 1200, 600, 64
+    img = Image.new("RGB", (W, H), BG)
+    d = ImageDraw.Draw(img)
+    shield(d, P, 52, 34)
+    d.text((P + 42, 70), "순순히안당해", font=f(28, "Bold"), fill=ON, anchor="lm")
+    kick = "가족방 답장 카드"
+    kw = d.textlength(kick, font=f(24, "Bold"))
+    d.rounded_rectangle([W - P - kw - 36, 48, W - P, 92], radius=22, fill=PILL)
+    d.text((W - P - kw - 18, 70), kick, font=f(24, "Bold"), fill=ON, anchor="lm")
+    # 왼쪽: 인사 + 제목
+    lx, lw = P, 430
+    y = 150
+    d.text((lx, y), s.get("lead", "공유해 줘서 고마워요"), font=f(30, "Bold"), fill=ON_SUB)
+    y += 56
+    for ln in wrap(d, s["title"], f(56, "Black"), lw):
+        d.text((lx, y), ln, font=f(56, "Black"), fill=ON)
+        y += 72
+    # 오른쪽: 항목
+    rx = P + lw + 40
+    items = s["items"]
+    top0, bottom, gap = 128, H - 96, 14
+    box_h = (bottom - top0 - gap * (len(items) - 1)) / len(items)
+    for i, it in enumerate(items):
+        top = top0 + i * (box_h + gap)
+        d.rounded_rectangle([rx, top, W - P, top + box_h], radius=18, fill=CARD)
+        check(d, rx + 38, top + box_h / 2, 18)
+        tx = rx + 72
+        lines = [l for part in it.split("\n") for l in wrap(d, part, f(27, "Bold"), W - P - 20 - tx)]
+        ty = top + (box_h - len(lines) * 38) / 2
+        for ln in lines:
+            d.text((tx, ty), ln, font=f(27, "Bold"), fill=INK)
+            ty += 38
+        if ty > top + box_h + 4:
+            print(f"[경고] 가로 카드 {i+1}번 칸이 넘칩니다")
+    d.line([(P, H - 70), (W - P, H - 70)], fill=PILL, width=2)
+    d.text((P, H - 38), "더 알아보려면 주소창에 andanghae.kr 직접 입력", font=f(22), fill=ON_SUB, anchor="lm")
+    p = os.path.join(out_dir, f"{s['name']}-reply-wide.png")
+    img.save(p, "PNG", optimize=True)
+    print(p, os.path.getsize(p) // 1024, "KB")
+
+
+if __name__ == "__main__" and len(sys.argv) > 3 and sys.argv[3] == "wide":
+    make_wide(json.load(open(sys.argv[1], encoding="utf-8")), sys.argv[2])
