@@ -138,21 +138,21 @@ def items_card(page, head, items, date, kind):
 
 def end_card(date, page=4, total=4):
     img, d = base(page, date, total)
-    y = 172
+    y = 150
     for ln in ["이 소식에는", "링크가 없어요"]:
-        d.text((PAD, y), ln, font=f(78, "Black"), fill=ON)
-        y += 100
-    y += 22
+        d.text((PAD, y), ln, font=f(74, "Black"), fill=ON)
+        y += 94
+    y += 14
     for ln in ["문자·메시지 속 링크는 누르지 않는 게 기본이에요.", "그래서 저희도 직접 찾아오시게 안내해요."]:
         d.text((PAD, y), ln, font=f(33), fill=ON_SUB)
-        y += 50
-    y += 40
+        y += 48
+    y += 26
     # 1) 주소창에 직접 입력 (그림 속 글자라 눌리지 않음)
     d.text((PAD, y), "주소창에 직접 입력", font=f(32, "Bold"), fill=ON)
     y += 52
     d.rounded_rectangle([PAD, y, W - PAD, y + 104], radius=20, fill=CARD)
     d.text((PAD + 34, y + 52), "andanghae.kr", font=f(50, "Bold"), fill=INK, anchor="lm")
-    y += 136
+    y += 124
     # 2) 또는 검색
     d.text((PAD, y), "또는 검색창에", font=f(32, "Bold"), fill=ON)
     y += 52
@@ -161,8 +161,18 @@ def end_card(date, page=4, total=4):
     d.ellipse([cx - 18, cy - 18, cx + 14, cy + 14], outline=BG, width=5)
     d.line([(cx + 10, cy + 10), (cx + 26, cy + 26)], fill=BG, width=6)
     d.text((PAD + 104, cy), "순순히안당해", font=f(44, "Bold"), fill=INK, anchor="lm")
-    if y + 104 > H - 100:
-        print("[경고] 4번 카드가 넘칩니다")
+    y += 104 + 30
+    # 3) 가족방 공유 안내 (카카오 소식 아래 공유 버튼을 쓰게 안내)
+    d.rounded_rectangle([PAD, y, W - PAD, y + 76], radius=38, fill=PILL)
+    sx, sy = PAD + 46, y + 38          # 공유 모양(점 3개 연결)
+    pts = [(sx - 14, sy), (sx + 12, sy - 15), (sx + 12, sy + 15)]
+    d.line([pts[1], pts[0], pts[2]], fill=ON, width=4)
+    for (px, py) in pts:
+        d.ellipse([px - 8, py - 8, px + 8, py + 8], fill=ON)
+    d.text((PAD + 84, sy), "가족방에도 공유해 주세요", font=f(32, "Bold"), fill=ON, anchor="lm")
+    d.text((W - PAD - 30, sy), "소식 아래 공유 버튼", font=f(26), fill=ON_SUB, anchor="rm")
+    if y + 76 > H - 100:
+        print("[경고] 마지막 카드가 넘칩니다")
     return img
 
 
