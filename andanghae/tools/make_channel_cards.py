@@ -1,6 +1,7 @@
 """순순히안당해 카카오톡 채널 '소식' 카드 4장 (1080x1080 JPG).
 
 사용: python3 make_channel_cards.py spec.json 출력폴더
+수법 경보 단독 소식: spec에 "type": "alert" + "card"(답장 카드 형식 title/items, lead·kick 바꿈) 또는 "reply_card"(기존 jpg 경로) → 2장(요약 카드 + 링크 없음 안내)
 spec.json 예시는 같은 폴더의 channel_spec_example.json.
 카드: 1 표지 / 2 이번 주 무슨 일이 / 3 이렇게 하세요 / 4 링크 없음 안내(고정)
 원칙: 주소·링크를 넣지 않는다. 하지 말 것은 끝까지 부정형으로 쓴다. 빨간 경고색은 쓰지 않는다.
@@ -62,14 +63,14 @@ def check(d, cx, cy, r):
            fill="white", width=max(3, int(r * .3)), joint="curve")
 
 
-def base(page, date):
+def base(page, date, total=4):
     img = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(img)
     # 브랜드 줄
     y = 64
     shield(d, PAD, y, 40, ON)
     d.text((PAD + 48, y + 22), "순순히안당해", font=f(32, "Bold"), fill=ON, anchor="lm")
-    d.text((W - PAD, y + 22), f"{page}/4", font=f(26), fill=ON_SUB, anchor="rm")
+    d.text((W - PAD, y + 22), f"{page}/{total}", font=f(26), fill=ON_SUB, anchor="rm")
     # 아래 띠
     d.line([(PAD, H - 92), (W - PAD, H - 92)], fill=PILL, width=2)
     d.text((PAD, H - 50), f"{date} 소식 · 확인된 사실만 담았어요", font=f(24), fill=ON_SUB, anchor="lm")
@@ -135,8 +136,8 @@ def items_card(page, head, items, date, kind):
     return img
 
 
-def end_card(date):
-    img, d = base(4, date)
+def end_card(date, page=4, total=4):
+    img, d = base(page, date, total)
     y = 172
     for ln in ["이 소식에는", "링크가 없어요"]:
         d.text((PAD, y), ln, font=f(78, "Black"), fill=ON)
@@ -169,13 +170,33 @@ def main(spec_path, out_dir):
     s = json.load(open(spec_path, encoding="utf-8"))
     os.makedirs(out_dir, exist_ok=True)
     date = s["date"]
+    prefix = s.get("prefix", "adh-channel")
+    if s.get("type") == "alert":
+        # 수법 경보 단독 소식: 1번 = 이미 만든 가족방 답장 카드, 2번 = 링크 없음 안내
+        if "card" in s:   # 답장 카드 틀로 채널용 1번 카드를 새로 그림(머리말·꼬리표만 채널용)
+            import tempfile
+            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+            import make_reply_card as rc
+            c = dict(s["card"]); c.setdefault("name", prefix)
+            tmp = tempfile.mkdtemp()
+            rc.make(c, tmp)
+            src = os.path.join(tmp, f"{c['name']}-reply-1080.jpg")
+        else:
+            src = os.path.join(os.path.dirname(os.path.abspath(spec_path)), s["reply_card"]) \
+                if not os.path.isabs(s["reply_card"]) else s["reply_card"]
+        first = Image.open(src).convert("RGB").resize((W, H))
+        cards = [first, end_card(date, 2, 2)]
+        for i, im in enumerate(cards, 1):
+            p = os.path.join(out_dir, f"{prefix}-{i}.jpg")
+            im.save(p, "JPEG", quality=88, optimize=True)
+            print(p, os.path.getsize(p) // 1024, "KB")
+        return
     cards = [
         cover(s, date),
         items_card(2, s["news"]["head"], s["news"]["items"], date, "news"),
         items_card(3, s["todo"]["head"], s["todo"]["items"], date, "do"),
         end_card(date),
     ]
-    prefix = s.get("prefix", "adh-channel")
     for i, im in enumerate(cards, 1):
         p = os.path.join(out_dir, f"{prefix}-{i}.jpg")
         im.save(p, "JPEG", quality=88, optimize=True)

@@ -65,7 +65,7 @@ def make(s, out_dir):
     # 브랜드
     shield(d, PAD, 64, 40)
     d.text((PAD + 48, 86), "순순히안당해", font=f(32, "Bold"), fill=ON, anchor="lm")
-    kick = "가족방 답장 카드"
+    kick = s.get("kick", "가족방 답장 카드")
     kw = d.textlength(kick, font=f(28, "Bold"))
     d.rounded_rectangle([S - PAD - kw - 40, 60, S - PAD, 112], radius=26, fill=PILL)
     d.text((S - PAD - kw - 20, 86), kick, font=f(28, "Bold"), fill=ON, anchor="lm")
