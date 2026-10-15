@@ -162,15 +162,14 @@ def end_card(date, page=4, total=4):
     d.line([(cx + 10, cy + 10), (cx + 26, cy + 26)], fill=BG, width=6)
     d.text((PAD + 104, cy), "순순히안당해", font=f(44, "Bold"), fill=INK, anchor="lm")
     y += 104 + 30
-    # 3) 가족방 공유 안내 (카카오 소식 아래 공유 버튼을 쓰게 안내)
+    # 3) 가족방 공유 안내 (카카오 소식 화면 오른쪽 위 공유 버튼을 쓰게 안내)
     d.rounded_rectangle([PAD, y, W - PAD, y + 76], radius=38, fill=PILL)
-    sx, sy = PAD + 46, y + 38          # 공유 모양(점 3개 연결)
-    pts = [(sx - 14, sy), (sx + 12, sy - 15), (sx + 12, sy + 15)]
-    d.line([pts[1], pts[0], pts[2]], fill=ON, width=4)
-    for (px, py) in pts:
-        d.ellipse([px - 8, py - 8, px + 8, py + 8], fill=ON)
+    sx, sy = PAD + 46, y + 38          # 카카오 소식 오른쪽 위 공유 아이콘 모양(위 화살표 + 열린 상자)
+    d.line([(sx - 15, sy - 2), (sx - 15, sy + 16), (sx + 15, sy + 16), (sx + 15, sy - 2)], fill=ON, width=4, joint="curve")
+    d.line([(sx, sy + 6), (sx, sy - 18)], fill=ON, width=4)
+    d.line([(sx - 9, sy - 9), (sx, sy - 18), (sx + 9, sy - 9)], fill=ON, width=4, joint="curve")
     d.text((PAD + 84, sy), "가족방에도 공유해 주세요", font=f(32, "Bold"), fill=ON, anchor="lm")
-    d.text((W - PAD - 30, sy), "소식 아래 공유 버튼", font=f(26), fill=ON_SUB, anchor="rm")
+    d.text((W - PAD - 30, sy), "오른쪽 위 공유 버튼", font=f(26), fill=ON_SUB, anchor="rm")
     if y + 76 > H - 100:
         print("[경고] 마지막 카드가 넘칩니다")
     return img
