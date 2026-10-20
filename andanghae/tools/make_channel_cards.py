@@ -1,7 +1,7 @@
 """순순히안당해 카카오톡 채널 '소식' 카드 4장 (1080x1080 JPG).
 
 사용: python3 make_channel_cards.py spec.json 출력폴더
-수법 경보 단독 소식: spec에 "type": "alert" + "card"(답장 카드 형식 title/items, lead·kick 바꿈) 또는 "reply_card"(기존 jpg 경로) → 2장(요약 카드 + 링크 없음 안내)
+수법 경보 단독 소식: spec에 "type": "alert" + "card"(답장 카드 형식 title/items, lead·kick 바꿈) → 기본 1장(할 일 + 공유 안내 + 주소·검색어). "cards": 2 면 예전 2장(요약 카드 + 링크 없음 안내)
 spec.json 예시는 같은 폴더의 channel_spec_example.json.
 카드: 1 표지 / 2 이번 주 무슨 일이 / 3 이렇게 하세요 / 4 링크 없음 안내(고정)
 원칙: 주소·링크를 넣지 않는다. 하지 말 것은 끝까지 부정형으로 쓴다. 빨간 경고색은 쓰지 않는다.
@@ -175,13 +175,81 @@ def end_card(date, page=4, total=4):
     return img
 
 
+def alert_single(card, date):
+    """수법 경보 단독 소식 1장 카드. 소식을 카톡으로 공유하면 사진이 여러 장일 때 반반 잘려 보여서 1장에 다 담는다.
+    위: 머리말·제목·할 일 3칸 / 아래: 공유 안내 띠 + 주소·검색어(그림 글자라 눌리지 않음)"""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import make_reply_card as rc
+    S = 1080
+    img = Image.new("RGB", (S, S), rc.BG)
+    d = ImageDraw.Draw(img)
+    P = rc.PAD
+    rc.shield(d, P, 64, 40)
+    d.text((P + 48, 86), "순순히안당해", font=rc.f(32, "Bold"), fill=rc.ON, anchor="lm")
+    kick = card.get("kick", "채널 소식")
+    kw = d.textlength(kick, font=rc.f(28, "Bold"))
+    d.rounded_rectangle([S - P - kw - 40, 60, S - P, 112], radius=26, fill=rc.PILL)
+    d.text((S - P - kw - 20, 86), kick, font=rc.f(28, "Bold"), fill=rc.ON, anchor="lm")
+    y = 160
+    d.text((P, y), card.get("lead", "새 수법 경보"), font=rc.f(38, "Bold"), fill=rc.ON_SUB)
+    y += 62
+    tl = rc.wrap(d, card["title"], rc.f(68, "Black"), S - P * 2)
+    if len(tl) > 1:
+        print("[경고] 제목이 두 줄입니다. 한 줄로 줄이면 칸이 넉넉해요")
+    for ln in tl:
+        d.text((P, y), ln, font=rc.f(68, "Black"), fill=rc.ON)
+        y += 88
+    y += 22
+    # 아래 고정 영역: 공유 띠(76) + 구분선 + 주소·검색 한 줄
+    band_top = S - 196
+    items = card["items"]
+    gap = 16
+    bottom = band_top - 24
+    box_h = (bottom - y - gap * (len(items) - 1)) / len(items)
+    for i, it in enumerate(items):
+        top = y + i * (box_h + gap)
+        d.rounded_rectangle([P, top, S - P, top + box_h], radius=22, fill=rc.CARD)
+        rc.check(d, P + 54, top + box_h / 2, 23)
+        tx = P + 100
+        lines = [l for part in it.split("\n") for l in rc.wrap(d, part, rc.f(38, "Bold"), S - P - 30 - tx)]
+        ty = top + (box_h - len(lines) * 50) / 2
+        for ln in lines:
+            d.text((tx, ty), ln, font=rc.f(38, "Bold"), fill=rc.INK)
+            ty += 50
+        if ty > top + box_h + 4:
+            print(f"[경고] {i+1}번 칸이 넘칩니다")
+    # 공유 안내 띠 (버튼 위치는 문구에서 안내, 그림에는 적지 않음)
+    d.rounded_rectangle([P, band_top, S - P, band_top + 76], radius=38, fill=rc.PILL)
+    sx, sy = P + 46, band_top + 38
+    d.line([(sx - 15, sy - 2), (sx - 15, sy + 16), (sx + 15, sy + 16), (sx + 15, sy - 2)], fill=rc.ON, width=4, joint="curve")
+    d.line([(sx, sy + 6), (sx, sy - 18)], fill=rc.ON, width=4)
+    d.line([(sx - 9, sy - 9), (sx, sy - 18), (sx + 9, sy - 9)], fill=rc.ON, width=4, joint="curve")
+    d.text((P + 84, sy), "가족방에도 공유해 주세요", font=rc.f(32, "Bold"), fill=rc.ON, anchor="lm")
+    d.text((S - P - 30, sy), f"{date} 소식", font=rc.f(26), fill=rc.ON_SUB, anchor="rm")
+    d.line([(P, S - 92), (S - P, S - 92)], fill=rc.PILL, width=2)
+    fy = S - 50
+    d.text((P, fy), "주소창에", font=rc.f(28), fill=rc.ON_SUB, anchor="lm")
+    x = P + d.textlength("주소창에 ", font=rc.f(28))
+    d.text((x, fy), "andanghae.kr", font=rc.f(30, "Bold"), fill=rc.ON, anchor="lm")
+    x += d.textlength("andanghae.kr", font=rc.f(30, "Bold"))
+    d.text((x, fy), "  ·  검색창에 ", font=rc.f(28), fill=rc.ON_SUB, anchor="lm")
+    x += d.textlength("  ·  검색창에 ", font=rc.f(28))
+    d.text((x, fy), "순순히안당해", font=rc.f(30, "Bold"), fill=rc.ON, anchor="lm")
+    return img
+
+
 def main(spec_path, out_dir):
     s = json.load(open(spec_path, encoding="utf-8"))
     os.makedirs(out_dir, exist_ok=True)
     date = s["date"]
     prefix = s.get("prefix", "adh-channel")
     if s.get("type") == "alert":
-        # 수법 경보 단독 소식: 1번 = 이미 만든 가족방 답장 카드, 2번 = 링크 없음 안내
+        # 수법 경보 단독 소식: 기본 1장(공유 미리보기에서 반반 잘리지 않게). "cards": 2 면 예전 2장 방식
+        if "card" in s and s.get("cards", 1) == 1:
+            p = os.path.join(out_dir, f"{prefix}-1.jpg")
+            alert_single(s["card"], date).save(p, "JPEG", quality=88, optimize=True)
+            print(p, os.path.getsize(p) // 1024, "KB")
+            return
         if "card" in s:   # 답장 카드 틀로 채널용 1번 카드를 새로 그림(머리말·꼬리표만 채널용)
             import tempfile
             sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

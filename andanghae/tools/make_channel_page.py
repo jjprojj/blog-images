@@ -26,7 +26,7 @@ header h1{{margin:4px 0 0;font-size:22px}}
 main{{max-width:560px;margin:0 auto;padding:16px}}
 .box{{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}}
 .steps{{font-size:15px;margin:0;padding-left:20px}}
-.grid{{display:grid;grid-template-columns:1fr 1fr;gap:10px}}
+.grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}}
 .card img{{width:100%;border-radius:10px;display:block;border:1px solid var(--line)}}
 .btn{{display:block;width:100%;margin-top:6px;padding:11px 0;border:0;border-radius:10px;background:var(--blue);color:#fff;font-size:15px;font-weight:700;text-align:center;text-decoration:none;cursor:pointer}}
 .btn.light{{background:#e8edfa;color:var(--blue)}}
@@ -38,12 +38,12 @@ h2{{font-size:16px;margin:0 0 8px}}
 <header><small>순순히안당해 채널 카드 소식 · {date}</small><h1>{title}</h1></header>
 <main>
 <div class="box"><ol class="steps">
-<li>카드 {n}장 [저장] 누르기 (또는 맨 아래 [{n}장 모두 저장])</li>
+<li>카드 {n}장 [저장] 누르기{all_hint}</li>
 <li>카카오톡 채널 관리자 앱 → 소식 → 새 소식 작성</li>
-<li>사진 {n}장을 순서대로 넣고, 제목·문구 [복사] → 붙여 넣기</li>
+<li>사진 {n}장을 넣고, 제목·문구 [복사] → 붙여 넣기</li>
 <li>'링크 추가'는 쓰지 않고 게시</li></ol></div>
 <div class="grid">{cards}</div>
-<button class="btn light" style="margin:10px 0 14px" onclick="saveAll()">{n}장 모두 저장</button>
+{save_all}
 <div class="box"><h2>제목</h2><div class="txt" id="t">{title}</div>
 <button class="btn" onclick="cp('t',this)">제목 복사</button></div>
 <div class="box"><h2>문구</h2><div class="txt" id="b">{body}</div>
@@ -64,7 +64,7 @@ CARD = '<div class="card"><img src="{f}" alt="카드 {i}"><a class="btn" href="{
 def main(spec_path, out_dir):
     s = json.load(open(spec_path, encoding="utf-8"))
     p = s["prefix"]
-    n = 2 if s.get("type") == "alert" else 4
+    n = s.get("cards", 1) if s.get("type") == "alert" else 4
     cards = "".join(CARD.format(f=f"{p}-{i}.jpg", i=i) for i in range(1, n + 1))
     for i in range(1, n + 1):
         if not os.path.exists(os.path.join(out_dir, f"{p}-{i}.jpg")):
@@ -73,7 +73,9 @@ def main(spec_path, out_dir):
     if "http" in body or "andanghae.kr" in body:
         sys.exit("문구에 주소가 들어 있습니다")
     page = TPL.format(date=html.escape(s["date"]), title=html.escape(s["post"]["title"]),
-                      body=html.escape(body), cards=cards, n=n)
+                      body=html.escape(body), cards=cards, n=n,
+                      all_hint=f" (또는 맨 아래 [{n}장 모두 저장])" if n > 1 else "",
+                      save_all=f'<button class="btn light" style="margin:-4px 0 14px" onclick="saveAll()">{n}장 모두 저장</button>' if n > 1 else "")
     out = os.path.join(out_dir, f"{p}.html")
     open(out, "w", encoding="utf-8").write(page)
     print(out)
