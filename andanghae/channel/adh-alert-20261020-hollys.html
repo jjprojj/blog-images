@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>채널 카드 소식 10월 20일</title>
+<style>
+:root{--blue:#1f47b8;--ink:#1d2433;--sub:#5a6274;--line:#e4e7ed;--bg:#f4f6fb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Noto Sans KR","Apple SD Gothic Neo",sans-serif;line-height:1.6}
+header{background:var(--blue);color:#fff;padding:18px 16px 20px}
+header small{opacity:.85}
+header h1{margin:4px 0 0;font-size:22px}
+main{max-width:560px;margin:0 auto;padding:16px}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.steps{font-size:15px;margin:0;padding-left:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card img{width:100%;border-radius:10px;display:block;border:1px solid var(--line)}
+.btn{display:block;width:100%;margin-top:6px;padding:11px 0;border:0;border-radius:10px;background:var(--blue);color:#fff;font-size:15px;font-weight:700;text-align:center;text-decoration:none;cursor:pointer}
+.btn.light{background:#e8edfa;color:var(--blue)}
+h2{font-size:16px;margin:0 0 8px}
+.txt{white-space:pre-wrap;background:#f8f6f1;border-radius:10px;padding:12px;font-size:15px}
+.done{background:#2f7d62!important;color:#fff!important}
+.note{font-size:13px;color:var(--sub)}
+</style></head><body>
+<header><small>순순히안당해 채널 카드 소식 · 10월 20일</small><h1>할리스 회원정보 유출, 같은 비밀번호 쓰는 곳부터 바꾸세요</h1></header>
+<main>
+<div class="box"><ol class="steps">
+<li>카드 2장 [저장] 누르기 (또는 맨 아래 [2장 모두 저장])</li>
+<li>카카오톡 채널 관리자 앱 → 소식 → 새 소식 작성</li>
+<li>사진 2장을 순서대로 넣고, 제목·문구 [복사] → 붙여 넣기</li>
+<li>'링크 추가'는 쓰지 않고 게시</li></ol></div>
+<div class="grid"><div class="card"><img src="adh-alert-20261020-hollys-1.jpg" alt="카드 1"><a class="btn" href="adh-alert-20261020-hollys-1.jpg" download="adh-alert-20261020-hollys-1.jpg">1번 저장</a></div><div class="card"><img src="adh-alert-20261020-hollys-2.jpg" alt="카드 2"><a class="btn" href="adh-alert-20261020-hollys-2.jpg" download="adh-alert-20261020-hollys-2.jpg">2번 저장</a></div></div>
+<button class="btn light" style="margin:10px 0 14px" onclick="saveAll()">2장 모두 저장</button>
+<div class="box"><h2>제목</h2><div class="txt" id="t">할리스 회원정보 유출, 같은 비밀번호 쓰는 곳부터 바꾸세요</div>
+<button class="btn" onclick="cp('t',this)">제목 복사</button></div>
+<div class="box"><h2>문구</h2><div class="txt" id="b">커피 전문점 할리스의 과거 회원정보 약 276만 건이 아이디·비밀번호·주소까지 빠져나갔어요. 2009년~2020년 초 가입자 정보라 예전에 가입만 해 둔 분도 해당될 수 있어요.
+
+▪ 할리스 비밀번호는 앱이나 직접 연 홈페이지에서 바꾸기.
+
+▪ 같은 아이디·비밀번호를 쓰던 이메일·은행·쇼핑몰 비밀번호부터 바꾸기.
+
+▪ 「유출 보상·쿠폰」 문자 속 링크는 누르지 않기.
+
+가족방에도 공유해 주세요. 소식 화면 오른쪽 위 공유 버튼을 누르면 카톡 대화방으로 바로 보낼 수 있어요.
+
+이 소식에는 일부러 링크를 넣지 않았어요. 사이트 주소는 마지막 카드에 있어요. 주소창에 직접 입력하거나 검색창에 &#x27;순순히안당해&#x27;를 쳐서 들어와 보세요.</div>
+<button class="btn" onclick="cp('b',this)">문구 복사</button></div>
+<p class="note">이 화면은 운영자 확인용이에요(검색에 나오지 않아요). 고칠 곳이 있으면 Claude 대화창에 "이번 주 카드 2장째 이렇게 바꿔줘"처럼 말하면 돼요. 올리지 않아도 괜찮아요.</p>
+</main>
+<script>
+function cp(id,btn){var s=document.getElementById(id).innerText;
+ var ok=function(){var o=btn.textContent;btn.textContent='복사됐어요';btn.classList.add('done');setTimeout(function(){btn.textContent=o;btn.classList.remove('done')},1800)};
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(s).then(ok,function(){fb(s);ok()})}else{fb(s);ok()}}
+function fb(s){var a=document.createElement('textarea');a.value=s;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()}
+function saveAll(){var l=document.querySelectorAll('a[download]');l.forEach(function(a,i){setTimeout(function(){a.click()},i*700)})}
+</script></body></html>
