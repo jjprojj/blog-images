@@ -4,7 +4,7 @@
 spec.json 의 prefix, date, post.title, post.body 를 읽어
 출력폴더/<prefix>.html 을 만든다. 같은 폴더에 <prefix>-1~4.jpg 가 있어야 한다.
 페이지 주소: https://jjprojj.github.io/blog-images/andanghae/channel/<prefix>.html
-카드마다 [저장] 버튼, 제목·문구마다 [복사] 버튼. post.link(andanghae.kr 글 주소)가 있으면 [글 주소 복사]도.
+카드마다 [저장] 버튼, 제목·문구마다 [복사] 버튼.
 """
 import html
 import json
@@ -78,13 +78,9 @@ def main(spec_path, out_dir):
         sys.exit("링크는 andanghae.kr 글 주소만 넣을 수 있습니다")
     if any(not (u == "https://andanghae.kr" or u.startswith("https://andanghae.kr/")) for u in urls):
         sys.exit("문구에 andanghae.kr 말고 다른 주소가 들어 있습니다")
-    if link:
-        step4 = "'링크 추가'가 있으면 아래 [글 주소 복사]로 같은 주소를 넣고 게시"
-        linkbox = ('<div class="box"><h2>글 주소</h2><div class="txt" id="l">' + html.escape(link) +
-                   '</div><button class="btn" onclick="cp(\'l\',this)">글 주소 복사</button></div>')
-    else:
-        step4 = "'링크 추가'는 쓰지 않고 게시"
-        linkbox = ""
+    # 2026-10-20: 카카오 소식 작성 화면에 '링크 추가' 칸이 없어 문구만 붙여 넣는다(주소는 문구 안에)
+    step4 = "게시"
+    linkbox = ""
     page = TPL.format(date=html.escape(s["date"]), title=html.escape(s["post"]["title"]),
                       body=html.escape(body), cards=cards, n=n, step4=step4, linkbox=linkbox,
                       all_hint=f" (또는 맨 아래 [{n}장 모두 저장])" if n > 1 else "",
