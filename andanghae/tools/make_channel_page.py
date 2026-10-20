@@ -4,7 +4,7 @@
 spec.json 의 prefix, date, post.title, post.body 를 읽어
 출력폴더/<prefix>.html 을 만든다. 같은 폴더에 <prefix>-1~4.jpg 가 있어야 한다.
 페이지 주소: https://jjprojj.github.io/blog-images/andanghae/channel/<prefix>.html
-카드마다 [저장] 버튼, 제목·문구마다 [복사] 버튼.
+카드마다 [저장] 버튼, 제목·문구마다 [복사] 버튼. post.link(andanghae.kr 글 주소)가 있으면 [글 주소 복사]도.
 """
 import html
 import json
@@ -41,12 +41,12 @@ h2{{font-size:16px;margin:0 0 8px}}
 <li>카드 {n}장 [저장] 누르기{all_hint}</li>
 <li>카카오톡 채널 관리자 앱 → 소식 → 새 소식 작성</li>
 <li>사진 {n}장을 넣고, 제목·문구 [복사] → 붙여 넣기</li>
-<li>'링크 추가'는 쓰지 않고 게시</li></ol></div>
+<li>{step4}</li></ol></div>
 <div class="grid">{cards}</div>
 {save_all}
 <div class="box"><h2>제목</h2><div class="txt" id="t">{title}</div>
 <button class="btn" onclick="cp('t',this)">제목 복사</button></div>
-<div class="box"><h2>문구</h2><div class="txt" id="b">{body}</div>
+{linkbox}<div class="box"><h2>문구</h2><div class="txt" id="b">{body}</div>
 <button class="btn" onclick="cp('b',this)">문구 복사</button></div>
 <p class="note">이 화면은 운영자 확인용이에요(검색에 나오지 않아요). 고칠 곳이 있으면 Claude 대화창에 "이번 주 카드 2장째 이렇게 바꿔줘"처럼 말하면 돼요. 올리지 않아도 괜찮아요.</p>
 </main>
@@ -70,10 +70,23 @@ def main(spec_path, out_dir):
         if not os.path.exists(os.path.join(out_dir, f"{p}-{i}.jpg")):
             sys.exit(f"카드 {i}번 파일이 없습니다")
     body = s["post"]["body"]
-    if "http" in body or "andanghae.kr" in body:
-        sys.exit("문구에 주소가 들어 있습니다")
+    link = s["post"].get("link", "")
+    # 우리 사이트 글 주소만 허용(2026-10-20 사용자 결정: 수법 경보 소식은 해당 글로 바로 들어오게 링크를 넣는다)
+    import re
+    urls = re.findall(r"https?://\S+", body)
+    if link and not link.startswith("https://andanghae.kr/"):
+        sys.exit("링크는 andanghae.kr 글 주소만 넣을 수 있습니다")
+    if any(u != link for u in urls) or (not link and urls):
+        sys.exit("문구에 우리 글 주소 말고 다른 주소가 들어 있습니다")
+    if link:
+        step4 = "'링크 추가'가 있으면 아래 [글 주소 복사]로 같은 주소를 넣고 게시"
+        linkbox = ('<div class="box"><h2>글 주소</h2><div class="txt" id="l">' + html.escape(link) +
+                   '</div><button class="btn" onclick="cp(\'l\',this)">글 주소 복사</button></div>')
+    else:
+        step4 = "'링크 추가'는 쓰지 않고 게시"
+        linkbox = ""
     page = TPL.format(date=html.escape(s["date"]), title=html.escape(s["post"]["title"]),
-                      body=html.escape(body), cards=cards, n=n,
+                      body=html.escape(body), cards=cards, n=n, step4=step4, linkbox=linkbox,
                       all_hint=f" (또는 맨 아래 [{n}장 모두 저장])" if n > 1 else "",
                       save_all=f'<button class="btn light" style="margin:-4px 0 14px" onclick="saveAll()">{n}장 모두 저장</button>' if n > 1 else "")
     out = os.path.join(out_dir, f"{p}.html")
