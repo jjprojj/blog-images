@@ -3,8 +3,8 @@
 사용: python3 make_channel_cards.py spec.json 출력폴더
 수법 경보 단독 소식: spec에 "type": "alert" + "card"(답장 카드 형식 title/items, lead·kick 바꿈) → 기본 1장(할 일 + 공유 안내 + 주소·검색어). "cards": 2 면 예전 2장(요약 카드 + 링크 없음 안내)
 spec.json 예시는 같은 폴더의 channel_spec_example.json.
-카드: 1 표지 / 2 이번 주 무슨 일이 / 3 이렇게 하세요 / 4 링크 없음 안내(고정)
-원칙: 주소·링크를 넣지 않는다. 하지 말 것은 끝까지 부정형으로 쓴다. 빨간 경고색은 쓰지 않는다.
+카드: 1 표지 / 2 이번 주 무슨 일이 / 3 이렇게 하세요 / 4 사이트 안내(고정: 문구 속 주소·주소창·검색어·가족방 공유)
+원칙: 카드 그림에는 눌리는 링크가 없다(주소는 그림 글자). 소식 문구에는 andanghae.kr 글 주소를 넣는다. 하지 말 것은 끝까지 부정형으로 쓴다. 빨간 경고색은 쓰지 않는다.
 """
 import json
 import os
@@ -139,11 +139,12 @@ def items_card(page, head, items, date, kind):
 def end_card(date, page=4, total=4):
     img, d = base(page, date, total)
     y = 150
-    for ln in ["이 소식에는", "링크가 없어요"]:
+    # 2026-10-20 사용자 결정: '링크 없음' 안내를 빼고, 소식 문구 속 우리 글 주소로 들어오게 안내
+    for ln in ["자세한 내용은", "순순히안당해에서"]:
         d.text((PAD, y), ln, font=f(74, "Black"), fill=ON)
         y += 94
     y += 14
-    for ln in ["문자·메시지 속 링크는 누르지 않는 게 기본이에요.", "그래서 저희도 직접 찾아오시게 안내해요."]:
+    for ln in ["소식 문구 속 주소를 누르면 글로 바로 가요.", "링크가 걱정되면 직접 찾아오셔도 돼요."]:
         d.text((PAD, y), ln, font=f(33), fill=ON_SUB)
         y += 48
     y += 26

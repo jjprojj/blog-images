@@ -76,8 +76,8 @@ def main(spec_path, out_dir):
     urls = re.findall(r"https?://\S+", body)
     if link and not link.startswith("https://andanghae.kr/"):
         sys.exit("링크는 andanghae.kr 글 주소만 넣을 수 있습니다")
-    if any(u != link for u in urls) or (not link and urls):
-        sys.exit("문구에 우리 글 주소 말고 다른 주소가 들어 있습니다")
+    if any(not (u == "https://andanghae.kr" or u.startswith("https://andanghae.kr/")) for u in urls):
+        sys.exit("문구에 andanghae.kr 말고 다른 주소가 들어 있습니다")
     if link:
         step4 = "'링크 추가'가 있으면 아래 [글 주소 복사]로 같은 주소를 넣고 게시"
         linkbox = ('<div class="box"><h2>글 주소</h2><div class="txt" id="l">' + html.escape(link) +
