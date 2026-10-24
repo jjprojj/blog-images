@@ -124,7 +124,8 @@ def make_wide(s, out_dir):
     y = 150
     d.text((lx, y), s.get("lead", "공유해 줘서 고마워요"), font=f(30, "Bold"), fill=ON_SUB)
     y += 56
-    for ln in wrap(d, s["title"], f(56, "Black"), lw):
+    # wide_title이 있으면 그것을 쓰고, 줄바꿈(\n)을 그대로 지킨다 (단어 중간 끊김 방지)
+    for ln in [l for part in s.get("wide_title", s["title"]).split("\n") for l in wrap(d, part, f(56, "Black"), lw)]:
         d.text((lx, y), ln, font=f(56, "Black"), fill=ON)
         y += 72
     # 오른쪽: 항목
