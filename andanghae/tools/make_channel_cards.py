@@ -80,7 +80,7 @@ def base(page, date, total=4):
 def cover(s, date):
     img, d = base(1, date)
     c = s["cover"]
-    tl = wrap(d, c["title"], f(86, "Black"), W - PAD * 2)
+    tl = [l for part in c["title"].split("\n") for l in wrap(d, part, f(86, "Black"), W - PAD * 2)]  # \n 줄바꿈 지원
     sl = wrap(d, c["sub"], f(38), W - PAD * 2)
     block = 80 + len(tl) * 112 + 30 + len(sl) * 58
     y = 130 + (H - 92 - 130 - block) / 2 - 20
