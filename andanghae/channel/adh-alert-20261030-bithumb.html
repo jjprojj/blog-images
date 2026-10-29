@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>채널 카드 소식 10월 30일</title>
+<style>
+:root{--blue:#1f47b8;--ink:#1d2433;--sub:#5a6274;--line:#e4e7ed;--bg:#f4f6fb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Noto Sans KR","Apple SD Gothic Neo",sans-serif;line-height:1.6}
+header{background:var(--blue);color:#fff;padding:18px 16px 20px}
+header small{opacity:.85}
+header h1{margin:4px 0 0;font-size:22px}
+main{max-width:560px;margin:0 auto;padding:16px}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.steps{font-size:15px;margin:0;padding-left:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.card img{width:100%;border-radius:10px;display:block;border:1px solid var(--line)}
+.btn{display:block;width:100%;margin-top:6px;padding:11px 0;border:0;border-radius:10px;background:var(--blue);color:#fff;font-size:15px;font-weight:700;text-align:center;text-decoration:none;cursor:pointer}
+.btn.light{background:#e8edfa;color:var(--blue)}
+h2{font-size:16px;margin:0 0 8px}
+.txt{white-space:pre-wrap;background:#f8f6f1;border-radius:10px;padding:12px;font-size:15px}
+.done{background:#2f7d62!important;color:#fff!important}
+.note{font-size:13px;color:var(--sub)}
+</style></head><body>
+<header><small>순순히안당해 채널 카드 소식 · 10월 30일</small><h1>빗썸 고객 844명 주민번호·신분증 사본 유출, 대상자라면 명의도용부터 막으세요</h1></header>
+<main>
+<div class="box"><ol class="steps">
+<li>카드 1장 [저장] 누르기</li>
+<li>카카오톡 채널 관리자 앱 → 소식 → 새 소식 작성</li>
+<li>사진 1장을 넣고, 제목·문구 [복사] → 붙여 넣기</li>
+<li>게시</li></ol></div>
+<div class="grid"><div class="card"><img src="adh-alert-20261030-bithumb-1.jpg" alt="카드 1"><a class="btn" href="adh-alert-20261030-bithumb-1.jpg" download="adh-alert-20261030-bithumb-1.jpg">1번 저장</a></div></div>
+
+<div class="box"><h2>제목</h2><div class="txt" id="t">빗썸 고객 844명 주민번호·신분증 사본 유출, 대상자라면 명의도용부터 막으세요</div>
+<button class="btn" onclick="cp('t',this)">제목 복사</button></div>
+<div class="box"><h2>문구</h2><div class="txt" id="b">빗썸 해킹 피해가 처음 알려진 것보다 컸어요. 고객 6,444명의 정보가 빠져나갔고, 이 중 844명은 주민등록번호·운전면허번호·계좌번호와 신분증 사본까지 그대로 노출됐어요. 빗썸은 코인과 거래 시스템은 영향이 없다고 밝혔어요.
+
+▪ 대상 여부는 문자 속 링크 말고 빗썸 앱이나 홈페이지 공지에서 직접 확인하기.
+
+▪ 대상자라면 금융감독원 &#x27;개인정보노출자 사고예방시스템&#x27; 등록과 휴대폰 가입제한(엠세이퍼)부터 하기.
+
+▪ &#x27;빗썸 직원&#x27;이라며 인증번호를 묻거나 앱 설치·신분증 전송을 요구하면 응하지 않기.
+
+대상자가 할 일을 순서대로, 이런 연락이 오면 어떻게 할지 순순히안당해 글에 정리해 두었어요.
+
+자세히 보기
+https://andanghae.kr/bithumb-leak-exchange-impersonation
+
+주소를 누르기 망설여지면 검색창에 &#x27;순순히안당해&#x27;를 쳐서 들어와도 돼요.
+
+가족방에도 공유해 주세요. 소식 화면 오른쪽 위 공유 버튼을 누르면 카톡 대화방으로 바로 보낼 수 있어요.</div>
+<button class="btn" onclick="cp('b',this)">문구 복사</button></div>
+<p class="note">이 화면은 운영자 확인용이에요(검색에 나오지 않아요). 고칠 곳이 있으면 Claude 대화창에 "이번 주 카드 2장째 이렇게 바꿔줘"처럼 말하면 돼요. 올리지 않아도 괜찮아요.</p>
+</main>
+<script>
+function cp(id,btn){var s=document.getElementById(id).innerText;
+ var ok=function(){var o=btn.textContent;btn.textContent='복사됐어요';btn.classList.add('done');setTimeout(function(){btn.textContent=o;btn.classList.remove('done')},1800)};
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(s).then(ok,function(){fb(s);ok()})}else{fb(s);ok()}}
+function fb(s){var a=document.createElement('textarea');a.value=s;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()}
+function saveAll(){var l=document.querySelectorAll('a[download]');l.forEach(function(a,i){setTimeout(function(){a.click()},i*700)})}
+</script></body></html>
