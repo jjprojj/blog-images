@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>채널 카드 소식 11월 6일</title>
+<style>
+:root{--blue:#1f47b8;--ink:#1d2433;--sub:#5a6274;--line:#e4e7ed;--bg:#f4f6fb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Noto Sans KR","Apple SD Gothic Neo",sans-serif;line-height:1.6}
+header{background:var(--blue);color:#fff;padding:18px 16px 20px}
+header small{opacity:.85}
+header h1{margin:4px 0 0;font-size:22px}
+main{max-width:560px;margin:0 auto;padding:16px}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.steps{font-size:15px;margin:0;padding-left:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.card img{width:100%;border-radius:10px;display:block;border:1px solid var(--line)}
+.btn{display:block;width:100%;margin-top:6px;padding:11px 0;border:0;border-radius:10px;background:var(--blue);color:#fff;font-size:15px;font-weight:700;text-align:center;text-decoration:none;cursor:pointer}
+.btn.light{background:#e8edfa;color:var(--blue)}
+h2{font-size:16px;margin:0 0 8px}
+.txt{white-space:pre-wrap;background:#f8f6f1;border-radius:10px;padding:12px;font-size:15px}
+.done{background:#2f7d62!important;color:#fff!important}
+.note{font-size:13px;color:var(--sub)}
+</style></head><body>
+<header><small>순순히안당해 채널 카드 소식 · 11월 6일</small><h1>&quot;휴대폰만 개통하면 대출해 드려요&quot;는 대출이 아니에요</h1></header>
+<main>
+<div class="box"><ol class="steps">
+<li>카드 1장 [저장] 누르기</li>
+<li>카카오톡 채널 관리자 앱 → 소식 → 새 소식 작성</li>
+<li>사진 1장을 넣고, 제목·문구 [복사] → 붙여 넣기</li>
+<li>게시</li></ol></div>
+<div class="grid"><div class="card"><img src="adh-alert-20261106-phoneloan-1.jpg" alt="카드 1"><a class="btn" href="adh-alert-20261106-phoneloan-1.jpg" download="adh-alert-20261106-phoneloan-1.jpg">1번 저장</a></div></div>
+
+<div class="box"><h2>제목</h2><div class="txt" id="t">&quot;휴대폰만 개통하면 대출해 드려요&quot;는 대출이 아니에요</div>
+<button class="btn" onclick="cp('t',this)">제목 복사</button></div>
+<div class="box"><h2>문구</h2><div class="txt" id="b">대출을 해 줄 것처럼 광고해 급전이 필요한 사람에게 본인 명의 휴대폰을 개통하게 하고, 소액만 준 뒤 폰을 가져가 해외로 판 일당 30명이 붙잡혔어요. 전남경찰청은 이렇게 넘어간 휴대폰이 1,226대, 시가 23억 원어치라고 밝혔어요. 명의를 빌려준 사람은 할부금과 요금을 떠안고 처벌까지 받을 수 있어요.
+
+▪ 대출 조건이라며 휴대폰 개통을 요구하면 응하지 않기.
+
+▪ 급한 돈이 필요하면 금감원 1332에 먼저 상담하기.
+
+▪ 이미 개통해 넘겼다면 엠세이퍼에서 내 명의 개통 내역부터 확인하기.
+
+받는 돈과 떠안는 돈이 얼마나 다른지, 이미 넘겼을 때 할 일을 순순히안당해 글에 정리해 두었어요.
+
+자세히 보기
+https://andanghae.kr/phone-opening-loan-naegooje-scam
+
+주소를 누르기 망설여지면 검색창에 &#x27;순순히안당해&#x27;를 쳐서 들어와도 돼요.
+
+가족방에도 공유해 주세요. 소식 화면 오른쪽 위 공유 버튼을 누르면 카톡 대화방으로 바로 보낼 수 있어요.</div>
+<button class="btn" onclick="cp('b',this)">문구 복사</button></div>
+<p class="note">이 화면은 운영자 확인용이에요(검색에 나오지 않아요). 고칠 곳이 있으면 Claude 대화창에 "이번 주 카드 2장째 이렇게 바꿔줘"처럼 말하면 돼요. 올리지 않아도 괜찮아요.</p>
+</main>
+<script>
+function cp(id,btn){var s=document.getElementById(id).innerText;
+ var ok=function(){var o=btn.textContent;btn.textContent='복사됐어요';btn.classList.add('done');setTimeout(function(){btn.textContent=o;btn.classList.remove('done')},1800)};
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(s).then(ok,function(){fb(s);ok()})}else{fb(s);ok()}}
+function fb(s){var a=document.createElement('textarea');a.value=s;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()}
+function saveAll(){var l=document.querySelectorAll('a[download]');l.forEach(function(a,i){setTimeout(function(){a.click()},i*700)})}
+</script></body></html>
