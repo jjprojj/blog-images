@@ -55,7 +55,17 @@ function cp(id,btn){{var s=document.getElementById(id).innerText;
  var ok=function(){{var o=btn.textContent;btn.textContent='복사됐어요';btn.classList.add('done');setTimeout(function(){{btn.textContent=o;btn.classList.remove('done')}},1800)}};
  if(navigator.clipboard&&navigator.clipboard.writeText){{navigator.clipboard.writeText(s).then(ok,function(){{fb(s);ok()}})}}else{{fb(s);ok()}}}}
 function fb(s){{var a=document.createElement('textarea');a.value=s;document.body.appendChild(a);a.select();try{{document.execCommand('copy')}}catch(e){{}}a.remove()}}
-function saveAll(){{var l=document.querySelectorAll('a[download]');l.forEach(function(a,i){{setTimeout(function(){{a.click()}},i*700)}})}}
+// 4장 모두 저장: 1→2→3→4 순서를 지키려고 그림을 미리 모두 받아 둔 뒤, 한 장씩 저장하고 다음 장 전에 충분히 기다린다.
+// (예전처럼 0.7초 간격으로 한꺼번에 누르면 휴대폰이 받는 순서가 뒤섞여 2,1,3,4로 저장되는 일이 있었다)
+function wait(ms){{return new Promise(function(r){{setTimeout(r,ms)}})}}
+async function saveAll(){{var btn=document.getElementById('saveall');if(btn.disabled)return;var o=btn.textContent;btn.disabled=true;
+ var l=Array.prototype.slice.call(document.querySelectorAll('a[download]'));var urls=[];
+ try{{btn.textContent='준비 중…';for(var i=0;i<l.length;i++){{var r=await fetch(l[i].getAttribute('href'),{{cache:'no-store'}});urls.push(URL.createObjectURL(await r.blob()))}}}}catch(e){{urls=null}}
+ for(var j=0;j<l.length;j++){{btn.textContent=(j+1)+'번 저장 중 ('+(j+1)+'/'+l.length+')';
+  var a=document.createElement('a');a.href=urls?urls[j]:l[j].getAttribute('href');a.download=l[j].getAttribute('download');document.body.appendChild(a);a.click();a.remove();
+  await wait(j===0?2500:1800)}}
+ if(urls)urls.forEach(function(u){{URL.revokeObjectURL(u)}});
+ btn.textContent='다 저장했어요 (1→2→3→4)';setTimeout(function(){{btn.textContent=o;btn.disabled=false}},2500)}}
 </script></body></html>"""
 
 CARD = '<div class="card"><img src="{f}" alt="카드 {i}"><a class="btn" href="{f}" download="{f}">{i}번 저장</a></div>'
@@ -84,7 +94,7 @@ def main(spec_path, out_dir):
     page = TPL.format(date=html.escape(s["date"]), title=html.escape(s["post"]["title"]),
                       body=html.escape(body), cards=cards, n=n, step4=step4, linkbox=linkbox,
                       all_hint=f" (또는 맨 아래 [{n}장 모두 저장])" if n > 1 else "",
-                      save_all=f'<button class="btn light" style="margin:-4px 0 14px" onclick="saveAll()">{n}장 모두 저장</button>' if n > 1 else "")
+                      save_all=f'<button id="saveall" class="btn light" style="margin:-4px 0 14px" onclick="saveAll()">{n}장 모두 저장</button>' if n > 1 else "")
     out = os.path.join(out_dir, f"{p}.html")
     open(out, "w", encoding="utf-8").write(page)
     print(out)
