@@ -3,7 +3,8 @@
 사용: python3 make_channel_cards.py spec.json 출력폴더
 수법 경보 단독 소식: spec에 "type": "alert" + "card"(답장 카드 형식 title/items, lead·kick 바꿈) → 기본 1장(할 일 + 공유 안내 + 주소·검색어). "cards": 2 면 예전 2장(요약 카드 + 링크 없음 안내)
 spec.json 예시는 같은 폴더의 channel_spec_example.json.
-카드: 1 표지 / 2 이번 주 무슨 일이 / 3 이렇게 하세요 / 4 사이트 안내(고정: 문구 속 주소·주소창·검색어·가족방 공유)
+카드: 1 표지 / 2 이번 주 무슨 일이 / 3 이렇게 하세요 / 4 사이트·토스 미니앱 안내(같은 크기 상자 2개 + "두 곳 링크 모두 이 글 아래에 있어요" + 가족방 공유)
+토스 링크는 channel_links.json 의 "toss". 비어 있으면 예전 카드(주소창·검색어 안내)로 그린다.
 원칙: 카드 그림에는 눌리는 링크가 없다(주소는 그림 글자). 소식 문구에는 andanghae.kr 글 주소를 넣는다. 하지 말 것은 끝까지 부정형으로 쓴다. 빨간 경고색은 쓰지 않는다.
 """
 import json
@@ -136,7 +137,7 @@ def items_card(page, head, items, date, kind):
     return img
 
 
-def end_card(date, page=4, total=4):
+def end_card_old(date, page=4, total=4):
     img, d = base(page, date, total)
     y = 150
     # 2026-10-20 사용자 결정: '링크 없음' 안내를 빼고, 소식 문구 속 우리 글 주소로 들어오게 안내
@@ -176,7 +177,7 @@ def end_card(date, page=4, total=4):
     return img
 
 
-def alert_single(card, date):
+def alert_single_old(card, date):
     """수법 경보 단독 소식 1장 카드. 소식을 카톡으로 공유하면 사진이 여러 장일 때 반반 잘려 보여서 1장에 다 담는다.
     위: 머리말·제목·할 일 3칸 / 아래: 공유 안내 띠 + 주소·검색어(그림 글자라 눌리지 않음)"""
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -237,6 +238,140 @@ def alert_single(card, date):
     x += d.textlength("  ·  검색창에 ", font=rc.f(28))
     d.text((x, fy), "순순히안당해", font=rc.f(30, "Bold"), fill=rc.ON, anchor="lm")
     return img
+
+
+YEL = "#ffe08a"
+DARK = "#13296e"
+
+
+def two_boxes(d, x0, y, w, h, compact=False):
+    """사이트(밝은 상자) · 토스 미니앱(어두운 상자)을 같은 크기로 나란히. 제목·이름 같은 크기 굵게, 설명도 같은 진하기."""
+    gap = 24
+    bw = (w - gap) / 2
+    boxes = [
+        dict(x=x0, fill=CARD, head="자세히 보기", head_c=BG, name=["순순히안당해", "사이트"], txt=INK,
+             desc=["주소창에 andanghae.kr", "수법·대처법 정리"]),
+        dict(x=x0 + bw + gap, fill=DARK, head="알림 받기", head_c=YEL, name=["토스 미니앱", "「순순히안당해」"], txt=ON,
+             desc=["앱 설치 없이 바로 열려요", "새 사기·유출 바로 알림"]),
+    ]
+    for b in boxes:
+        d.rounded_rectangle([b["x"], y, b["x"] + bw, y + h], radius=24, fill=b["fill"])
+        tx, ty = b["x"] + 30, y + 26
+        d.text((tx, ty), b["head"], font=f(34, "Bold"), fill=b["head_c"])
+        ty += 54
+        for ln in b["name"]:
+            d.text((tx, ty), ln, font=f(36, "Black"), fill=b["txt"])
+            ty += 48
+        if not compact:
+            ty += 20
+            for ln in b["desc"]:
+                if d.textlength(ln, font=f(30, "Bold")) > bw - 60:
+                    print("[경고] 설명이 넘칩니다:", ln)
+                d.text((tx, ty), ln, font=f(30, "Bold"), fill=b["txt"])
+                ty += 46
+        if ty > y + h:
+            print("[경고] 상자가 넘칩니다", b["head"])
+
+
+def share_band(d, x0, x1, y, right):
+    d.rounded_rectangle([x0, y, x1, y + 76], radius=38, fill=PILL)
+    sx, sy = x0 + 46, y + 38
+    d.line([(sx - 15, sy - 2), (sx - 15, sy + 16), (sx + 15, sy + 16), (sx + 15, sy - 2)], fill=ON, width=4, joint="curve")
+    d.line([(sx, sy + 6), (sx, sy - 18)], fill=ON, width=4)
+    d.line([(sx - 9, sy - 9), (sx, sy - 18), (sx + 9, sy - 9)], fill=ON, width=4, joint="curve")
+    d.text((x0 + 84, sy), "가족방에도 공유해 주세요", font=f(32, "Bold"), fill=ON, anchor="lm")
+    d.text((x1 - 30, sy), right, font=f(26), fill=ON_SUB, anchor="rm")
+
+
+def end_card_new(date, page=4, total=4):
+    img, d = base(page, date, total)
+    y = 150
+    for ln in ["자세한 내용과 알림은", "여기 두 곳에서"]:
+        d.text((PAD, y), ln, font=f(68, "Black"), fill=ON)
+        y += 88
+    y += 10
+    d.text((PAD, y), "링크가 걱정되면 주소창·검색으로 직접 오셔도 돼요.", font=f(30), fill=ON_SUB)
+    y += 64
+    two_boxes(d, PAD, y, W - PAD * 2, 350)
+    y += 350 + 26
+    d.rounded_rectangle([PAD, y, W - PAD, y + 76], radius=38, fill=YEL)
+    d.text((W / 2, y + 38), "두 곳 링크 모두 이 글 아래에 있어요", font=f(34, "Bold"), fill=INK, anchor="mm")
+    y += 76 + 22
+    share_band(d, PAD, W - PAD, y, "오른쪽 위 공유 버튼")
+    if y + 76 > H - 60:
+        print("[경고] 마지막 카드가 넘칩니다", y + 76)
+    return img
+
+
+def alert_single_new(card, date):
+    """수법 경보 단독 소식 1장 카드. 소식을 카톡으로 공유하면 사진이 여러 장일 때 반반 잘려 보여서 1장에 다 담는다.
+    위: 머리말·제목·할 일 3칸 / 아래: 공유 안내 띠 + 주소·검색어(그림 글자라 눌리지 않음)"""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import make_reply_card as rc
+    S = 1080
+    img = Image.new("RGB", (S, S), rc.BG)
+    d = ImageDraw.Draw(img)
+    P = rc.PAD
+    rc.shield(d, P, 64, 40)
+    d.text((P + 48, 86), "순순히안당해", font=rc.f(32, "Bold"), fill=rc.ON, anchor="lm")
+    kick = card.get("kick", "채널 소식")
+    kw = d.textlength(kick, font=rc.f(28, "Bold"))
+    d.rounded_rectangle([S - P - kw - 40, 60, S - P, 112], radius=26, fill=rc.PILL)
+    d.text((S - P - kw - 20, 86), kick, font=rc.f(28, "Bold"), fill=rc.ON, anchor="lm")
+    y = 160
+    d.text((P, y), card.get("lead", "새 수법 경보"), font=rc.f(38, "Bold"), fill=rc.ON_SUB)
+    y += 62
+    tl = rc.wrap(d, card["title"], rc.f(68, "Black"), S - P * 2)
+    if len(tl) > 1:
+        print("[경고] 제목이 두 줄입니다. 한 줄로 줄이면 칸이 넉넉해요")
+    for ln in tl:
+        d.text((P, y), ln, font=rc.f(68, "Black"), fill=rc.ON)
+        y += 88
+    y += 22
+    # 아래 고정 영역: 사이트·토스 상자 2개(같은 크기) + 작은 안내 줄
+    boxes_h = 200
+    band_top = S - 70 - boxes_h
+    items = card["items"]
+    gap = 16
+    bottom = band_top - 26
+    box_h = (bottom - y - gap * (len(items) - 1)) / len(items)
+    for i, it in enumerate(items):
+        top = y + i * (box_h + gap)
+        d.rounded_rectangle([P, top, S - P, top + box_h], radius=22, fill=rc.CARD)
+        rc.check(d, P + 54, top + box_h / 2, 23)
+        tx = P + 100
+        lines = [l for part in it.split("\n") for l in rc.wrap(d, part, rc.f(36, "Bold"), S - P - 30 - tx)]
+        ty = top + (box_h - len(lines) * 48) / 2
+        for ln in lines:
+            d.text((tx, ty), ln, font=rc.f(36, "Bold"), fill=rc.INK)
+            ty += 48
+        if ty > top + box_h + 4:
+            print(f"[경고] {i+1}번 칸이 넘칩니다")
+    two_boxes(d, P, band_top, S - P * 2, boxes_h, compact=True)
+    fy = S - 36
+    d.text((P, fy), "두 곳 링크 모두 이 글 아래에 있어요", font=rc.f(28, "Bold"), fill=YEL, anchor="lm")
+    d.text((S - P, fy), "가족방 공유: 오른쪽 위 버튼", font=rc.f(26), fill=rc.ON_SUB, anchor="rm")
+    return img
+
+
+
+
+def toss_link():
+    """토스 미니앱 공유 링크(channel_links.json). 비어 있으면 예전 카드·문구(사이트 안내만)로 만든다."""
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "channel_links.json")
+    try:
+        return (json.load(open(p, encoding="utf-8")).get("toss") or "").strip()
+    except Exception:
+        return ""
+
+
+def end_card(date, page=4, total=4):
+    # 2026-11-26 사용자 결정: 공모주날처럼 사이트(자세히 보기)·토스 미니앱(알림 받기)을 같은 크기 상자로 나란히
+    return end_card_new(date, page, total) if toss_link() else end_card_old(date, page, total)
+
+
+def alert_single(card, date):
+    return alert_single_new(card, date) if toss_link() else alert_single_old(card, date)
 
 
 def main(spec_path, out_dir):

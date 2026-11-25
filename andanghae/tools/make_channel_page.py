@@ -2,7 +2,11 @@
 
 사용: python3 make_channel_page.py spec.json 출력폴더
 spec.json 의 prefix, date, post.title, post.body 를 읽어
-출력폴더/<prefix>.html 을 만든다. 같은 폴더에 <prefix>-1~4.jpg 가 있어야 한다.
+출력폴더/<prefix>.html 과 <prefix>-body.txt(완성된 소식 문구) 를 만든다.
+2026-11-26: post.body 에는 요약과 ▪ 할 일까지만 쓴다. 끝부분(📖 사이트 · 🔔 토스 미니앱 안내, 검색 안내, 가족방 공유)은
+이 도구가 붙인다. post.site_desc(사이트 묶음 한 줄 설명), post.link(글 1개) 또는 post.links([[제목, 주소], …] 주간 소식)를 쓴다.
+토스 링크는 channel_links.json 의 "toss"; 비어 있으면 예전 끝부분(사이트 주소·검색 안내·공유)으로 만든다.
+예전 형식(body 안에 '가족방에도 공유해 주세요'까지 들어 있음)은 그대로 쓴다. 같은 폴더에 <prefix>-1~4.jpg 가 있어야 한다.
 페이지 주소: https://jjprojj.github.io/blog-images/andanghae/channel/<prefix>.html
 카드마다 [저장] 버튼, 제목·문구마다 [복사] 버튼.
 """
@@ -40,14 +44,15 @@ h2{{font-size:16px;margin:0 0 8px}}
 <div class="box"><ol class="steps">
 <li>카드 {n}장 [저장] 누르기{all_hint}</li>
 <li>카카오톡 채널 관리자 앱 → 소식 → 새 소식 작성</li>
-<li>사진 {n}장을 넣고, 제목·문구 [복사] → 붙여 넣기</li>
+<li>사진 {n}장을 넣고, 제목·문구 [복사] → 붙여 넣기 (문구 안에 링크가 다 들어 있어요)</li>
 <li>{step4}</li></ol></div>
 <div class="grid">{cards}</div>
 {save_all}
 <div class="box"><h2>제목</h2><div class="txt" id="t">{title}</div>
 <button class="btn" onclick="cp('t',this)">제목 복사</button></div>
-{linkbox}<div class="box"><h2>문구</h2><div class="txt" id="b">{body}</div>
+<div class="box"><h2>문구</h2><div class="txt" id="b">{body}</div>
 <button class="btn" onclick="cp('b',this)">문구 복사</button></div>
+{linkbox}
 <p class="note">이 화면은 운영자 확인용이에요(검색에 나오지 않아요). 고칠 곳이 있으면 Claude 대화창에 "이번 주 카드 2장째 이렇게 바꿔줘"처럼 말하면 돼요. 올리지 않아도 괜찮아요.</p>
 </main>
 <script>
@@ -71,6 +76,44 @@ async function saveAll(){{var btn=document.getElementById('saveall');if(btn.disa
 CARD = '<div class="card"><img src="{f}" alt="카드 {i}"><a class="btn" href="{f}" download="{f}">{i}번 저장</a></div>'
 
 
+TAIL_DEFAULT_DESC = "어떤 수법인지, 당했을 때 할 일까지 정리했어요."
+SHARE = "가족방에도 공유해 주세요. 소식 화면 오른쪽 위 공유 버튼을 누르면 카톡 대화방으로 바로 보낼 수 있어요."
+
+
+def toss_link():
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "channel_links.json")
+    try:
+        return (json.load(open(p, encoding="utf-8")).get("toss") or "").strip()
+    except Exception:
+        return ""
+
+
+def compose(post, toss):
+    """요약·할 일 뒤에 사이트·토스 안내를 붙여 완성된 소식 문구를 만든다."""
+    body = post["body"].rstrip()
+    if "가족방에도 공유해 주세요" in body:      # 예전 형식: 이미 끝부분까지 들어 있음
+        return body
+    links = post.get("links") or ([["", post["link"]]] if post.get("link") else [])
+    if toss:
+        site = ["📖 자세히 보기 · 순순히안당해 사이트 (휴대폰·PC 모두)", post.get("site_desc") or TAIL_DEFAULT_DESC]
+        for label, url in links:
+            if label:
+                site.append("· " + label)
+            site.append("👉 " + url)
+        site.append("주소를 누르기 망설여지면 주소창에 andanghae.kr, 검색창에 '순순히안당해'를 쳐서 들어와도 돼요.")
+        app = ["🔔 알림 받기 · 토스 미니앱 「순순히안당해」",
+               "앱 설치 없이 토스에서 바로 열려요. 새 사기 수법이나 개인정보 유출이 나오면 바로 알려 드려요.",
+               "👉 " + toss]
+        return "\n\n".join([body, "\n".join(site), "\n".join(app), SHARE])
+    site = ["자세히 보기"]
+    for label, url in links:
+        if label:
+            site.append("· " + label)
+        site.append(url)
+    return "\n\n".join([body, "\n".join(site),
+                         "주소를 누르기 망설여지면 검색창에 '순순히안당해'를 쳐서 들어와도 돼요.", SHARE])
+
+
 def main(spec_path, out_dir):
     s = json.load(open(spec_path, encoding="utf-8"))
     p = s["prefix"]
@@ -79,25 +122,39 @@ def main(spec_path, out_dir):
     for i in range(1, n + 1):
         if not os.path.exists(os.path.join(out_dir, f"{p}-{i}.jpg")):
             sys.exit(f"카드 {i}번 파일이 없습니다")
-    body = s["post"]["body"]
-    link = s["post"].get("link", "")
-    # 우리 사이트 글 주소만 허용(2026-10-20 사용자 결정: 수법 경보 소식은 해당 글로 바로 들어오게 링크를 넣는다)
+    toss = toss_link()
+    body = compose(s["post"], toss)
+    link = s["post"].get("link") or (s["post"].get("links") or [["", ""]])[0][1]
+    # 우리 사이트 글 주소와 우리 토스 미니앱 링크만 허용
     import re
     urls = re.findall(r"https?://\S+", body)
     if link and not link.startswith("https://andanghae.kr/"):
         sys.exit("링크는 andanghae.kr 글 주소만 넣을 수 있습니다")
-    if any(not (u == "https://andanghae.kr" or u.startswith("https://andanghae.kr/")) for u in urls):
-        sys.exit("문구에 andanghae.kr 말고 다른 주소가 들어 있습니다")
+    bad = [u for u in urls if not (u == "https://andanghae.kr" or u.startswith("https://andanghae.kr/") or (toss and u == toss))]
+    if bad:
+        sys.exit("문구에 andanghae.kr·토스 미니앱 말고 다른 주소가 들어 있습니다: " + ", ".join(bad))
     # 2026-10-20: 카카오 소식 작성 화면에 '링크 추가' 칸이 없어 문구만 붙여 넣는다(주소는 문구 안에)
-    step4 = "게시"
+    # 2026-11-26: 소식 버튼을 달 수 있으면 사이트('자세히 보기')로, 하나 더 달 수 있으면 토스 링크
+    step4 = "게시 (소식 버튼을 달 수 있으면 아래 '(선택) 소식 버튼용'에서 사이트 링크 복사)"
+    btns = []
+    if link:
+        btns.append(('ls', '자세히 보기 · 사이트 링크', link))
+    if toss:
+        btns.append(('lt', '알림 받기 · 토스 미니앱 링크 (버튼 하나 더 달 수 있을 때)', toss))
     linkbox = ""
+    if btns:
+        rows = "".join(f'<p class="note" style="margin:8px 0 2px">{html.escape(t)}</p><div class="txt" id="{i}">{html.escape(u)}</div>'
+                       f'<button class="btn light" onclick="cp(\'{i}\',this)">복사</button>' for i, t, u in btns)
+        linkbox = f'<div class="box"><h2>(선택) 소식 버튼용</h2><p class="note" style="margin:0">문구에 이미 두 링크가 다 들어 있어요. 버튼을 달 때만 쓰세요.</p>{rows}</div>'
     page = TPL.format(date=html.escape(s["date"]), title=html.escape(s["post"]["title"]),
                       body=html.escape(body), cards=cards, n=n, step4=step4, linkbox=linkbox,
                       all_hint=f" (또는 맨 아래 [{n}장 모두 저장])" if n > 1 else "",
                       save_all=f'<button id="saveall" class="btn light" style="margin:-4px 0 14px" onclick="saveAll()">{n}장 모두 저장</button>' if n > 1 else "")
     out = os.path.join(out_dir, f"{p}.html")
     open(out, "w", encoding="utf-8").write(page)
+    open(os.path.join(out_dir, f"{p}-body.txt"), "w", encoding="utf-8").write(body)
     print(out)
+    print(os.path.join(out_dir, f"{p}-body.txt"))
     print(f"https://jjprojj.github.io/blog-images/andanghae/channel/{p}.html")
 
 
