@@ -3,8 +3,20 @@
   "prefix": "adh-channel-20261014",
   "post": {
     "title": "이번 주 사기 소식 5가지",
-    "body": "이번 주는 정보유출 소식이 이어졌어요. 알아 둘 5가지를 카드로 모았어요.\n\n▪ 보상 안내 문자 속 링크는 누르지 않기.\n\n▪ 내 정보를 아는 전화도 끊고 대표번호로 다시 걸기.\n\n▪ 모르는 돈이 들어오면 쓰거나 옮기지 말고 은행에 먼저 알리기.\n\n자세히 보기\n· 금융권 유출 뒤 보상 안내 문자\nhttps://andanghae.kr/finance-leak-compensation-smishing\n· 새마을금고 유출, 잔액을 아는 연락\nhttps://andanghae.kr/mg-saemaeul-leak-what-to-do\n\n주소를 누르기 망설여지면 검색창에 '순순히안당해'를 쳐서 들어와도 돼요.\n\n가족방에도 공유해 주세요. 소식 화면 오른쪽 위 공유 버튼을 누르면 카톡 대화방으로 바로 보낼 수 있어요.",
-    "link": "https://andanghae.kr/finance-leak-compensation-smishing"
+    "body": "이번 주는 정보유출 소식이 이어졌어요. 알아 둘 5가지를 카드로 모았어요.\n\n▪ 보상 안내 문자 속 링크는 누르지 않기.\n\n▪ 내 정보를 아는 전화도 끊고 대표번호로 다시 걸기.\n\n▪ 모르는 돈이 들어오면 쓰거나 옮기지 말고 은행에 먼저 알리기.",
+    "link": "https://andanghae.kr/finance-leak-compensation-smishing",
+    "site_desc": "유출 뒤 오는 보상 문자와 잔액을 아는 연락 대처법을 정리했어요.",
+    "links": [
+      [
+        "금융권 유출 뒤 보상 안내 문자",
+        "https://andanghae.kr/finance-leak-compensation-smishing"
+      ],
+      [
+        "새마을금고 유출, 잔액을 아는 연락",
+        "https://andanghae.kr/mg-saemaeul-leak-what-to-do"
+      ]
+    ],
+    "_note": "2026-11-26부터 body에는 요약·▪ 할 일까지만. 끝부분(사이트·토스 미니앱 안내, 검색 안내, 공유 줄)은 make_channel_page.py가 channel_links.json을 보고 붙인다."
   },
   "cover": {
     "kicker": "이번 주 사기 소식",
