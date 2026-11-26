@@ -1,6 +1,11 @@
-"""순순히안당해 카카오톡 채널 '소식' 카드 4장 (1080x1080 JPG).
+"""순순히안당해 카카오톡 채널 '소식' 카드 4장.
 
-사용: python3 make_channel_cards.py spec.json 출력폴더
+기본 출력은 1200x900(4:3) — make_channel_cards_43.from_spec 으로 그린다(2026-11-26 사용자 규칙).
+채널홈이 소식 썸네일을 4:3, 공지 카드를 16:9로 가운데만 잘라 보여 주기 때문.
+글자·상자는 가장자리 60px 안쪽, 공지에 연결하는 소개 카드는 가운데 16:9 띠(세로 112~787) 안에만.
+예전 1080x1080 정사각형이 꼭 필요하면 --square (카카오 소식에는 쓰지 않는다).
+
+사용: python3 make_channel_cards.py spec.json 출력폴더 [--square]
 수법 경보 단독 소식: spec에 "type": "alert" + "card"(답장 카드 형식 title/items, lead·kick 바꿈) → 기본 1장(할 일 + 공유 안내 + 주소·검색어). "cards": 2 면 예전 2장(요약 카드 + 링크 없음 안내)
 spec.json 예시는 같은 폴더의 channel_spec_example.json.
 카드: 1 표지 / 2 이번 주 무슨 일이 / 3 이렇게 하세요 / 4 사이트·토스 미니앱 안내(같은 크기 상자 2개 + "두 곳 링크 모두 이 글 아래에 있어요" + 가족방 공유)
@@ -374,8 +379,14 @@ def alert_single(card, date):
     return alert_single_new(card, date) if toss_link() else alert_single_old(card, date)
 
 
-def main(spec_path, out_dir):
+def main(spec_path, out_dir, square=False):
     s = json.load(open(spec_path, encoding="utf-8"))
+    if not square and str(s.get("size", "43")) != "1080":
+        # 2026-11-26 사용자 규칙: 카카오 소식 카드는 처음부터 1200x900(4:3)로 만든다.
+        # 인스타용 1:1 카드를 그대로 쓰지 않는다. 예전 1080 정사각형은 --square 또는 spec "size": "1080".
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import make_channel_cards_43 as m43
+        return m43.from_spec(spec_path, out_dir)
     os.makedirs(out_dir, exist_ok=True)
     date = s["date"]
     prefix = s.get("prefix", "adh-channel")
@@ -417,4 +428,5 @@ def main(spec_path, out_dir):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    args = [a for a in sys.argv[1:] if a != "--square"]
+    main(args[0], args[1], square="--square" in sys.argv)
