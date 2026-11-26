@@ -3,9 +3,10 @@
 사용: python3 make_channel_page.py spec.json 출력폴더
 spec.json 의 prefix, date, post.title, post.body 를 읽어
 출력폴더/<prefix>.html 과 <prefix>-body.txt(완성된 소식 문구) 를 만든다.
-2026-11-26: post.body 에는 요약과 ▪ 할 일까지만 쓴다. 끝부분(📖 사이트 · 🔔 토스 미니앱 안내, 검색 안내, 가족방 공유)은
+2026-11-26: post.body 에는 요약과 ▪ 할 일까지만 쓴다. 끝부분(🔍 사이트 · 🔔 토스 미니앱 안내, 검색 안내, 가족방 공유)은
 이 도구가 붙인다. post.site_desc(사이트 묶음 한 줄 설명), post.link(글 1개) 또는 post.links([[제목, 주소], …] 주간 소식)를 쓴다.
 토스 링크는 channel_links.json 의 "toss"; 비어 있으면 예전 끝부분(사이트 주소·검색 안내·공유)으로 만든다.
+2026-11-27: 사이트 안내 이모지를 📖 → 🔍 로 바꿈(흰 책이 폰에서 잘 안 보임). 개별 소식 순서는 사이트(자세히 보기) → 토스(알림 받기) 그대로.
 예전 형식(body 안에 '가족방에도 공유해 주세요'까지 들어 있음)은 그대로 쓴다. 같은 폴더에 <prefix>-1~4.jpg 가 있어야 한다.
 페이지 주소: https://jjprojj.github.io/blog-images/andanghae/channel/<prefix>.html
 카드마다 [저장] 버튼, 제목·문구마다 [복사] 버튼.
@@ -95,7 +96,7 @@ def compose(post, toss):
         return body
     links = post.get("links") or ([["", post["link"]]] if post.get("link") else [])
     if toss:
-        site = ["📖 자세히 보기 · 순순히안당해 사이트 (휴대폰·PC 모두)", post.get("site_desc") or TAIL_DEFAULT_DESC]
+        site = ["🔍 자세히 보기 · 순순히안당해 사이트 (휴대폰·PC 모두)", post.get("site_desc") or TAIL_DEFAULT_DESC]
         for label, url in links:
             if label:
                 site.append("· " + label)
