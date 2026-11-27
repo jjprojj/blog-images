@@ -1,0 +1,94 @@
+{
+ "005": {
+  "tags": "dashboard,night,interior,dark",
+  "used": []
+ },
+ "006": {
+  "tags": "frost,window,detail,dark",
+  "used": []
+ },
+ "007": {
+  "tags": "forest,road,fog,night,dark",
+  "used": []
+ },
+ "008": {
+  "tags": "engine,garage,repair,dark",
+  "used": []
+ },
+ "009": {
+  "tags": "street,old-town,night,warm",
+  "used": []
+ },
+ "010": {
+  "tags": "snow,mountain,road,cool",
+  "used": []
+ },
+ "011": {
+  "tags": "parking,garage,empty,cool",
+  "used": []
+ },
+ "012": {
+  "tags": "highway,light-trails,dusk,warm",
+  "used": []
+ },
+ "013": {
+  "tags": "gas-station,night,warm",
+  "used": []
+ },
+ "014": {
+  "tags": "key-fob,detail,warm",
+  "used": []
+ },
+ "015": {
+  "tags": "coast,road,sunset,warm",
+  "used": []
+ },
+ "016": {
+  "tags": "tire,wet,detail,bw",
+  "used": []
+ },
+ "017": {
+  "tags": "workshop,repair,tools",
+  "used": []
+ },
+ "018": {
+  "tags": "driving,hand,city-night,dark",
+  "used": []
+ },
+ "019": {
+  "tags": "rain,windshield,bokeh,dark",
+  "used": []
+ },
+ "020": {
+  "tags": "traffic,dusk,warm",
+  "used": []
+ },
+ "021": {
+  "tags": "showroom,suv,bright",
+  "used": []
+ },
+ "022": {
+  "tags": "cabin,tunnel,passengers,warm",
+  "used": []
+ },
+ "023": {
+  "tags": "ev,charging,night,wet",
+  "used": []
+ },
+ "001": {
+  "tags": "pilot",
+  "used": []
+ },
+ "002": {
+  "tags": "pilot",
+  "used": []
+ },
+ "003": {
+  "tags": "pilot",
+  "used": []
+ },
+ "004": {
+  "tags": "pilot",
+  "used": []
+ }
+}
