@@ -90,5 +90,189 @@
  "004": {
   "tags": "pilot",
   "used": []
+ },
+ "024": {
+  "tags": "cobblestone,rain,night",
+  "used": []
+ },
+ "025": {
+  "tags": "hood,droplets,detail",
+  "used": []
+ },
+ "026": {
+  "tags": "carwash,night",
+  "used": []
+ },
+ "028": {
+  "tags": "forest,road,autumn",
+  "used": []
+ },
+ "029": {
+  "tags": "brake,wheel,detail",
+  "used": []
+ },
+ "030": {
+  "tags": "city,night,sedan",
+  "used": []
+ },
+ "031": {
+  "tags": "topview,snow,night",
+  "used": []
+ },
+ "032": {
+  "tags": "bridge,light-trails,dusk",
+  "used": []
+ },
+ "033": {
+  "tags": "offroad,forest,dust",
+  "used": []
+ },
+ "034": {
+  "tags": "rearview,dusk,highway",
+  "used": []
+ },
+ "035": {
+  "tags": "mountain,switchback,fog",
+  "used": []
+ },
+ "036": {
+  "tags": "highway,truck,dusk",
+  "used": []
+ },
+ "037": {
+  "tags": "lake,fog,hatchback",
+  "used": []
+ },
+ "038": {
+  "tags": "console,interior,detail,bright",
+  "used": []
+ },
+ "039": {
+  "tags": "snow,night,suv",
+  "used": []
+ },
+ "041": {
+  "tags": "streetlamp,snow,wagon",
+  "used": []
+ },
+ "042": {
+  "tags": "street,dusk,ev",
+  "used": []
+ },
+ "043": {
+  "tags": "tire,detail",
+  "used": []
+ },
+ "044": {
+  "tags": "key-fob,detail",
+  "used": []
+ },
+ "045": {
+  "tags": "parking,garage",
+  "used": []
+ },
+ "046": {
+  "tags": "snow,mountain,road",
+  "used": []
+ },
+ "047": {
+  "tags": "rain,windshield,bokeh",
+  "used": []
+ },
+ "048": {
+  "tags": "dashboard,dusk",
+  "used": []
+ },
+ "049": {
+  "tags": "highway,light-trails,wet",
+  "used": []
+ },
+ "050": {
+  "tags": "traffic,rear-window",
+  "used": []
+ },
+ "051": {
+  "tags": "old-town,night",
+  "used": []
+ },
+ "052": {
+  "tags": "battery,jumper,detail",
+  "used": []
+ },
+ "053": {
+  "tags": "autumn,road",
+  "used": []
+ },
+ "054": {
+  "tags": "fog,forest,road",
+  "used": []
+ },
+ "055": {
+  "tags": "street,dusk,ev",
+  "used": []
+ },
+ "056": {
+  "tags": "gas-station,ev,night",
+  "used": []
+ },
+ "057": {
+  "tags": "snow,night,wagon",
+  "used": []
+ },
+ "058": {
+  "tags": "cobblestone,dusk",
+  "used": []
+ },
+ "059": {
+  "tags": "ev,charging,night",
+  "used": []
+ },
+ "060": {
+  "tags": "brake,detail",
+  "used": []
+ },
+ "061": {
+  "tags": "parking,frost,cool",
+  "used": []
+ },
+ "062": {
+  "tags": "sunrise,road,windshield",
+  "used": []
+ },
+ "063": {
+  "tags": "showroom,suv",
+  "used": []
+ },
+ "064": {
+  "tags": "coast,sedan,dusk",
+  "used": []
+ },
+ "065": {
+  "tags": "highway,truck,fog",
+  "used": []
+ },
+ "066": {
+  "tags": "workshop,lift",
+  "used": []
+ },
+ "067": {
+  "tags": "cabin,family,tunnel",
+  "used": []
+ },
+ "069": {
+  "tags": "driving,hand,night",
+  "used": []
+ },
+ "070": {
+  "tags": "frost,window",
+  "used": []
+ },
+ "071": {
+  "tags": "engine,garage",
+  "used": []
+ },
+ "072": {
+  "tags": "topview,parking",
+  "used": []
  }
 }
