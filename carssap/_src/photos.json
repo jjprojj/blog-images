@@ -274,5 +274,93 @@
  "072": {
   "tags": "topview,parking",
   "used": []
+ },
+ "073": {
+  "tags": "rain,window,city,cool",
+  "used": []
+ },
+ "074": {
+  "tags": "street,cafe,day,warm",
+  "used": []
+ },
+ "075": {
+  "tags": "overpass,sunrise,wide,warm",
+  "used": []
+ },
+ "076": {
+  "tags": "flatlay,keys,map,bright",
+  "used": []
+ },
+ "077": {
+  "tags": "door-handle,rain,detail,cool",
+  "used": []
+ },
+ "078": {
+  "tags": "parking,apartment,dusk,cool",
+  "used": []
+ },
+ "079": {
+  "tags": "interior,suv,bright,beige",
+  "used": []
+ },
+ "080": {
+  "tags": "mountain,road,day,wide",
+  "used": []
+ },
+ "081": {
+  "tags": "gas-station,hand,day",
+  "used": []
+ },
+ "082": {
+  "tags": "avenue,ginkgo,autumn,day",
+  "used": []
+ },
+ "083": {
+  "tags": "trunk,picnic,park,warm",
+  "used": []
+ },
+ "084": {
+  "tags": "steering,hands,suburb,bright",
+  "used": []
+ },
+ "085": {
+  "tags": "crosswalk,morning,small-car,warm",
+  "used": []
+ },
+ "086": {
+  "tags": "garage,symmetry,cool,bright",
+  "used": []
+ },
+ "087": {
+  "tags": "dashboard,day,bright",
+  "used": []
+ },
+ "088": {
+  "tags": "wheel,studio,bright,detail",
+  "used": []
+ },
+ "089": {
+  "tags": "coast,highway,day,wide",
+  "used": []
+ },
+ "090": {
+  "tags": "ev,charging,day,cool",
+  "used": []
+ },
+ "091": {
+  "tags": "child-seat,interior,family,warm",
+  "used": []
+ },
+ "092": {
+  "tags": "key-fob,hands,bright,detail",
+  "used": []
+ },
+ "093": {
+  "tags": "parking,topview,day",
+  "used": []
+ },
+ "094": {
+  "tags": "countryside,road,autumn,wide",
+  "used": []
  }
 }
