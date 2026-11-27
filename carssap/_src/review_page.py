@@ -21,7 +21,7 @@ h1{font-size:20px;margin:0}.sub{margin:4px 0 0;color:var(--muted);font-size:14px
 .st{margin-left:auto;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid var(--line)}
 .st.ok{color:var(--ok);border-color:var(--ok)}.st.bad{color:var(--warn);border-color:var(--warn)}
 .ti{font-size:16px;font-weight:700;line-height:1.4;margin:0;word-break:keep-all}
-.th{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.th img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:6px;display:block;cursor:zoom-in}
+.cv{position:relative}.car{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;scrollbar-width:none;-webkit-overflow-scrolling:touch;border-radius:10px}.car::-webkit-scrollbar{display:none}.car img{flex:0 0 100%;width:100%;aspect-ratio:4/5;object-fit:cover;scroll-snap-align:center;border-radius:10px;display:block}.cnt{position:absolute;right:10px;top:10px;background:rgba(0,0,0,.6);color:#fff;font-size:13px;font-weight:700;padding:3px 10px;border-radius:99px}.nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:0;background:rgba(0,0,0,.45);color:#fff;font-size:22px;padding:0;min-height:0}.nav.l{left:8px}.nav.r{right:8px}.dots{display:flex;gap:6px;justify-content:center;margin-top:8px}.dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}.dots i.on{background:var(--acc)}.row button{flex:1;min-height:52px;font-size:16px}
 details{font-size:13px;color:var(--muted)}details pre{white-space:pre-wrap;word-break:break-word;margin:6px 0 0;font:inherit;color:var(--fg);line-height:1.6}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 button{font:inherit;font-size:14px;font-weight:700;padding:10px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;min-height:44px}
@@ -62,8 +62,13 @@ function dayOf(w){return w}
 function card(p){
   var r=rows[p.num], s=r?r.status:'', el=E('section','post'), h=E('div','hd');
   h.append(E('span','day',p.day),E('span','kind',p.kind+' · '+p.when+' 게시'),badge(s)); el.append(h,E('p','ti','#'+p.num+' '+p.title));
-  var th=E('div','th'); p.thumbs.forEach(function(u){var i=E('img');i.src=u;i.alt='카드';i.onclick=function(){var l=document.getElementById('lb');l.firstChild.src=u;l.style.display='flex'};th.append(i)}); el.append(th);
-  var d=E('details'); d.append(E('summary',null,'캡션 보기')); var pre=E('pre',null,p.caption); d.append(pre); el.append(d);
+  var cv=E('div','cv'), car=E('div','car'), cnt=E('span','cnt','1/'+p.thumbs.length), dots=E('div','dots'), ds=[];
+  p.thumbs.forEach(function(u,k){var i=E('img');i.src=u;i.alt='카드 '+(k+1);car.append(i);var d=E('i');if(!k)d.className='on';ds.push(d);dots.append(d)});
+  function go(k){var w=car.clientWidth+8;k=Math.max(0,Math.min(p.thumbs.length-1,k));car.scrollTo({left:k*w,behavior:'smooth'})}
+  car.addEventListener('scroll',function(){var w=car.clientWidth+8,k=Math.round(car.scrollLeft/w);cnt.textContent=(k+1)+'/'+p.thumbs.length;ds.forEach(function(d,j){d.className=j===k?'on':''})});
+  var bl=E('button','nav l','‹'),br=E('button','nav r','›');bl.onclick=function(){go(Math.round(car.scrollLeft/(car.clientWidth+8))-1)};br.onclick=function(){go(Math.round(car.scrollLeft/(car.clientWidth+8))+1)};
+  cv.append(car,cnt,bl,br); el.append(cv,dots);
+  var d=E('details'); d.append(E('summary',null,'캡션 보기 (눌러서 펼치기)')); var pre=E('pre',null,p.caption); d.append(pre); el.append(d);
   var act=E('div','row'), pd=pend[p.num];
   if(!r){act.append(E('span','msg','시트 상태를 불러오는 중이거나 읽지 못했어요.'))}
   else if(s==='게시완료'){act.append(E('span','msg','이미 올라간 글이에요.'))}
